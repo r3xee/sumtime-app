@@ -4,11 +4,15 @@ import {
   RegisterService,
   LogoutService,
   GoogleLoginService,
+  UpdatePasswordService,
 } from "../service/auth.service";
 import {
   GetProfileByEmailService,
   CheckProfileCompleteService,
   CreateProfileService,
+  UpdateProfileWithEmailService,
+  UploadAvatarService,
+  UpdateAvatarService,
 } from "../service/profile.service";
 import { supabase } from "../lib/supabase/client";
 
@@ -187,6 +191,114 @@ export const useAuthStore = create((set, get) => ({
     } catch (error) {
       console.error("Check profile complete error:", error);
       return false;
+    }
+  },
+
+  // Update profile dengan email
+  updateProfile: async (payload) => {
+    const { authUser } = get();
+    if (!authUser) {
+      return {
+        status: false,
+        message: "User tidak ditemukan",
+      };
+    }
+
+    try {
+      const res = await UpdateProfileWithEmailService({
+        id: authUser.id,
+        ...payload,
+      });
+
+      if (!res.status) {
+        return res;
+      }
+
+      // Update state profile dan authUser jika email berubah
+      set({ profile: res.data });
+
+      if (payload.email && payload.email !== authUser.email) {
+        // Refresh auth user
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session?.user) {
+          set({ authUser: session.user });
+        }
+      }
+
+      return res;
+    } catch (error) {
+      console.error("Update profile error:", error);
+      return {
+        status: false,
+        message: error.message,
+      };
+    }
+  },
+
+  // Update password
+  updatePassword: async (newPassword) => {
+    const { authUser } = get();
+
+    try {
+      const id = authUser.id;
+      const res = await UpdatePasswordService({ id, newPassword });
+      return res;
+    } catch (error) {
+      console.error("Update password error:", error);
+      return {
+        status: false,
+        message: error.message,
+      };
+    }
+  },
+
+  // Upload dan update avatar
+  uploadAvatar: async (file) => {
+    const { authUser, profile } = get();
+    if (!authUser) {
+      return {
+        status: false,
+        message: "User tidak ditemukan",
+      };
+    }
+
+    try {
+      // Upload file
+      const uploadRes = await UploadAvatarService(
+        file,
+        authUser.id,
+        profile?.avatar_url
+      );
+      if (!uploadRes.status) {
+        return uploadRes;
+      }
+
+      // Update avatar_url di profile
+      const updateRes = await UpdateAvatarService({
+        id: authUser.id,
+        avatar_url: uploadRes.data.url,
+      });
+
+      if (!updateRes.status) {
+        return updateRes;
+      }
+
+      // Update state
+      set({ profile: updateRes.data });
+
+      return {
+        status: true,
+        message: "Avatar berhasil diupdate",
+        data: updateRes.data,
+      };
+    } catch (error) {
+      console.error("Upload avatar error:", error);
+      return {
+        status: false,
+        message: error.message,
+      };
     }
   },
 }));

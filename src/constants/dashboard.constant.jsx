@@ -1,10 +1,15 @@
-import { Home, Package, Users, ShoppingCart, Tag, User } from "lucide-react";
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  UserCog,
+} from "lucide-react";
 
 export const ADMIN_MENU_ITEMS = [
   {
     id: "dashboard",
     label: "Dashboard",
-    icon: Home,
+    icon: LayoutDashboard,
     path: "/admin",
   },
   {
@@ -14,27 +19,38 @@ export const ADMIN_MENU_ITEMS = [
     path: "/admin/produk",
   },
   {
-    id: "kategori",
-    label: "Kategori",
-    icon: Tag,
-    path: "/admin/kategori",
-  },
-  {
     id: "order",
     label: "Order",
     icon: ShoppingCart,
     path: "/admin/order",
   },
   {
-    id: "admin",
-    label: "Admin",
-    icon: User,
-    path: "/admin/admin",
-  },
-  {
-    id: "member",
-    label: "Member",
-    icon: Users,
-    path: "/admin/member",
+    id: "user",
+    label: "User",
+    icon: UserCog,
+    path: "/admin/user",
   },
 ];
+
+export const ORDER_STATUS = {
+  pending: {
+    label: "Pending",
+    color: "bg-gray-100 text-gray-800",
+  },
+  sedang_dibuat: {
+    label: "Sedang Dibuat",
+    color: "bg-blue-100 text-blue-800",
+  },
+  sedang_diantar: {
+    label: "Sedang Diantar",
+    color: "bg-yellow-100 text-yellow-800",
+  },
+  selesai: {
+    label: "Selesai",
+    color: "bg-green-100 text-green-800",
+  },
+  dibatalkan: {
+    label: "Dibatalkan",
+    color: "bg-red-100 text-red-800",
+  },
+};

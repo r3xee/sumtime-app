@@ -7,10 +7,20 @@ import CompleteProfilePages from "../../pages/auth/complete-profile";
 import AdminPages from "../../pages/admin";
 import MemberPages from "../../pages/member";
 import DashboardPage from "../../pages/admin/dashboard";
+import AdminProdukPage from "../../pages/admin/produk";
+import OrderPage from "../../pages/admin/order";
+import UserPage from "../../pages/admin/user";
+import EditProfilePage from "../../pages/admin/edit-profile";
 import InformasiAkunPage from "../../pages/member/informasi-akun";
 import RiwayatPemesananPage from "../../pages/member/riwayat-pemesanan";
-import { AdminRoute, MemberRoute } from "../../component/ProtectedRoute";
+import RiwayatTransaksiPage from "../../pages/member/riwayat-transaksi";
+import RiwayatDetailPage from "../../pages/member/riwayat-detail";
 import EditAkunPages from "../../pages/member/edit-akun";
+import ProdukPages from "../../pages/produk";
+import DetailProdukPages from "../../pages/detail-produk";
+import KeranjangPage from "../../pages/keranjang";
+import CheckoutPage from "../../pages/checkout";
+import { AdminRoute, MemberRoute } from "../../component/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -34,8 +44,20 @@ export const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: "/product",
-    element: <product />,
+    path: "/produk",
+    element: <ProdukPages />,
+  },
+  {
+    path: "/produk/:id",
+    element: <DetailProdukPages />,
+  },
+  {
+    path: "/keranjang",
+    element: <KeranjangPage />,
+  },
+  {
+    path: "/checkout",
+    element: <CheckoutPage />,
   },
   {
     path: "/admin",
@@ -48,6 +70,22 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <DashboardPage />,
+      },
+      {
+        path: "produk",
+        element: <AdminProdukPage />,
+      },
+      {
+        path: "order",
+        element: <OrderPage />,
+      },
+      {
+        path: "user",
+        element: <UserPage />,
+      },
+      {
+        path: "edit-profile",
+        element: <EditProfilePage />,
       },
     ],
   },
@@ -66,6 +104,14 @@ export const router = createBrowserRouter([
       {
         path: "riwayat-pemesanan",
         element: <RiwayatPemesananPage />,
+      },
+      {
+        path: "riwayat-transaksi",
+        element: <RiwayatTransaksiPage />,
+      },
+      {
+        path: "riwayat-transaksi/:id",
+        element: <RiwayatDetailPage />,
       },
       {
         path: "edit-akun",

@@ -11,11 +11,19 @@ const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 fixed h-full overflow-y-auto">
+      {/* Sidebar - Icon only on mobile, full width on desktop */}
+      <aside className="w-20 lg:w-64 bg-white border-r border-gray-200 fixed lg:fixed h-full overflow-y-auto z-40">
+
         {/* Logo */}
-        <div className="p-6 border-b border-gray-200">
-          <img src="/logo2.png" alt="SumTime" className="h-12 object-contain" />
+        <div className="w-full flex justify-center items-center border-b border-gray-200 py-4 lg:py-6">
+          <div className="hidden lg:block relative flex justify-center items-center w-[160px] h-[80px]">
+            <img
+              src="/logo2.png"
+              className="absolute object-contain"
+              alt="SumTimes"
+            />
+          </div>
+          <div className="lg:hidden text-xl font-bold text-blue-600">ST</div>
         </div>
 
         {/* Menu Items */}
@@ -28,14 +36,15 @@ const AdminLayout = () => {
               <button
                 key={item.id}
                 onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                className={`w-full flex items-center justify-center lg:justify-start gap-3 px-3 lg:px-4 py-3 rounded-lg transition-all ${
                   active
                     ? "bg-blue-50 text-blue-600"
                     : "text-gray-700 hover:bg-gray-50"
                 }`}
+                title={item.label}
               >
                 <Icon size={20} />
-                <span className="font-medium">{item.label}</span>
+                <span className="font-medium hidden lg:inline">{item.label}</span>
               </button>
             );
           })}
@@ -43,7 +52,7 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 overflow-y-auto">
+      <main className="flex-1 ml-20 lg:ml-64 overflow-y-auto">
         <Outlet />
       </main>
     </div>

@@ -1,78 +1,17 @@
-import { Outlet, useNavigate } from "react-router";
-import { ShoppingCart, CircleUserRound, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Outlet, useNavigate, useLocation } from "react-router";
+import { User } from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
+import Navbar from "../component/ui/navbar";
 
 const MemberLayout = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const { logout } = useAuthStore();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const location = useLocation();
 
   return (
     <div className="min-h-screen bg-[url('../background.png')] bg-repeat-y bg-center relative">
       <div className="absolute inset-0 z-0 bg-white opacity-70"></div>
-      {/* Navbar */}
-      <nav
-        className={`fixed top-0 flex items-center justify-between px-8 lg:px-20 py-5 w-full z-10 h-16 transition-all duration-300 ease-initial ${
-          isScrolled ? "bg-white shadow-xl" : ""
-        }`}
-      >
-        {/* Logo */}
-        <div className="flex items-center">
-          <img
-            src="/Logoo.png"
-            alt="Logo"
-            className="h-12 lg:h-20 w-auto max-w-full object-contain cursor-pointer"
-            onClick={() => navigate("/")}
-          />
-        </div>
-
-        {/* Menu */}
-        <ul className="hidden md:flex gap-6">
-          <a
-            href="/"
-            className="text-[#898989] hover:text-blue-500 transition font-bold"
-          >
-            <li>Beranda</li>
-          </a>
-          <a
-            href="/#benefit"
-            className="text-[#898989] hover:text-blue-500 transition font-bold"
-          >
-            <li>Benefit</li>
-          </a>
-          <a
-            href="/product"
-            className="text-[#898989] hover:text-blue-500 transition font-bold"
-          >
-            <li>Produk</li>
-          </a>
-          <a
-            href="/#kontak"
-            className="text-[#898989] hover:text-blue-500 transition font-bold"
-          >
-            <li>Kontak Kami</li>
-          </a>
-        </ul>
-
-        {/* Icons */}
-        <div className="flex gap-5">
-          <ShoppingCart className="cursor-pointer hover:text-blue-500 transition" />
-          <CircleUserRound
-            className="cursor-pointer hover:text-blue-500 transition"
-            onClick={() => navigate("/member")}
-          />
-        </div>
-      </nav>
-
-      {/* Main Content */}
+      <Navbar />
       <main className="pt-20 relative z-10">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -80,14 +19,23 @@ const MemberLayout = () => {
               <div className="bg-white rounded-lg shadow-sm p-4 space-y-2">
                 <button
                   onClick={() => navigate("/member")}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-100 text-blue-600 font-medium"
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition ${
+                    location.pathname === "/member"
+                      ? "bg-blue-100 text-blue-600"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
                 >
                   <User size={20} />
                   <span>Informasi Akun</span>
                 </button>
                 <button
                   onClick={() => navigate("/member/riwayat-pemesanan")}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition ${
+                    location.pathname === "/member/riwayat-pemesanan" ||
+                    location.pathname.startsWith("/member/riwayat-transaksi")
+                      ? "bg-blue-100 text-blue-600"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
                 >
                   <svg
                     className="w-5 h-5"
@@ -104,7 +52,10 @@ const MemberLayout = () => {
                   </svg>
                   <span>Riwayat Pemesanan</span>
                 </button>
-                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 font-medium">
+                <button
+                  onClick={logout}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"

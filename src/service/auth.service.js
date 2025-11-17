@@ -1,3 +1,4 @@
+import { adminAuthClient } from "../lib/supabase/admin";
 import { supabase } from "../lib/supabase/client";
 import { CreateProfileService } from "./profile.service";
 
@@ -83,5 +84,24 @@ export const GoogleLoginService = async () => {
   }
   return {
     status: true,
+  };
+};
+
+export const UpdatePasswordService = async ({ id, newPassword }) => {
+  const { data, error } = await adminAuthClient.auth.admin.updateUserById(id, {
+    password: newPassword,
+  });
+
+  if (error) {
+    return {
+      status: false,
+      message: error.message,
+    };
+  }
+
+  return {
+    status: true,
+    message: "Password berhasil diubah",
+    data: data,
   };
 };

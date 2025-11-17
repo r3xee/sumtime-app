@@ -1,7 +1,7 @@
-import RiwayatPemesanan from "../../component/member/RiwayatPemesanan";
+import RiwayatTransaksiPage from "./riwayat-transaksi";
 
 const RiwayatPemesananPage = () => {
-  return <RiwayatPemesanan />;
+  return <RiwayatTransaksiPage />;
 };
 
 export default RiwayatPemesananPage;
