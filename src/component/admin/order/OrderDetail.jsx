@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { X, Loader2, User, MapPin, FileText } from "lucide-react";
+import { showToast } from "../../../store/useToastStore";
 import { UpdateOrderStatusService } from "../../../service/order.service";
 import { ORDER_STATUS } from "../../../constants/dashboard.constant";
 
@@ -9,7 +10,11 @@ const OrderDetail = ({ order, onClose }) => {
 
   const handleUpdateStatus = async () => {
     if (status === order.status) {
-      alert("Status tidak berubah");
+      showToast({
+        type: "warning",
+        heading: "Status tidak berubah",
+        description: "Pilih status yang berbeda sebelum menyimpan.",
+      });
       return;
     }
 
@@ -20,11 +25,19 @@ const OrderDetail = ({ order, onClose }) => {
     setLoading(false);
 
     if (!res.status) {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal mengupdate status",
+        description: res.message || "Terjadi kesalahan saat mengupdate status.",
+      });
       return;
     }
 
-    alert("Status order berhasil diupdate");
+    showToast({
+      type: "success",
+      heading: "Status diupdate",
+      description: "Status order berhasil diupdate.",
+    });
     onClose(true);
   };
 

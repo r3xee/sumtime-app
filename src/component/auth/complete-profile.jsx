@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { Loader2, X } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { UpdateProfileService } from "../../service/profile.service";
+import { showToast } from "../../store/useToastStore";
 
 const CompleteProfile = () => {
   const navigate = useNavigate();
@@ -64,7 +65,11 @@ const CompleteProfile = () => {
     // Refresh profile data
     await refreshProfile();
 
-    alert("Profile berhasil dilengkapi!");
+    showToast({
+      type: "success",
+      heading: "Profil lengkap",
+      description: "Profile berhasil dilengkapi!",
+    });
     setIsLoading(false);
 
     // Redirect based on role

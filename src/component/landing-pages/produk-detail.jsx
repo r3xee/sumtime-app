@@ -10,6 +10,7 @@ import {
 import { GetProdukByIdService } from "../../service/produk.service";
 import { AddToKeranjangService } from "../../service/keranjang.service";
 import { useAuthStore } from "../../store/useAuthStore";
+import { showToast } from "../../store/useToastStore";
 
 const ProdukDetailPage = () => {
   const { id } = useParams();
@@ -34,17 +35,29 @@ const ProdukDetailPage = () => {
 
   const handleAddToCart = async () => {
     if (!authUser) {
-      alert("Silakan login terlebih dahulu");
+      showToast({
+        type: "warning",
+        heading: "Perlu login",
+        description: "Silakan login terlebih dahulu.",
+      });
       navigate("/login");
       return;
     }
 
     const res = await AddToKeranjangService(authUser.id, product.id, 1);
     if (res.status) {
-      alert("Berhasil ditambahkan ke keranjang");
+      showToast({
+        type: "success",
+        heading: "Berhasil",
+        description: "Berhasil ditambahkan ke keranjang.",
+      });
       navigate("/keranjang");
     } else {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal",
+        description: res.message || "Gagal menambahkan ke keranjang.",
+      });
     }
   };
 
@@ -58,7 +71,11 @@ const ProdukDetailPage = () => {
 
   const handleBuyNow = async () => {
     if (!authUser) {
-      alert("Silakan login terlebih dahulu");
+      showToast({
+        type: "warning",
+        heading: "Perlu login",
+        description: "Silakan login terlebih dahulu.",
+      });
       navigate("/login");
       return;
     }

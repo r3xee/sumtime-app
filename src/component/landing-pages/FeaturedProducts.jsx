@@ -3,6 +3,7 @@ import { ShoppingCart } from "lucide-react";
 import { GetRandomProdukService } from "../../service/produk.service";
 import { AddToKeranjangService } from "../../service/keranjang.service";
 import { useAuthStore } from "../../store/useAuthStore";
+import { showToast } from "../../store/useToastStore";
 import { useNavigate } from "react-router";
 import LoadingSkeleton from "./ui/LoadingProduct";
 
@@ -27,22 +28,38 @@ const FeaturedProducts = () => {
 
   const handleAddToCart = async (produkId) => {
     if (!authUser) {
-      alert("Silakan login terlebih dahulu");
+      showToast({
+        type: "warning",
+        heading: "Perlu login",
+        description: "Silakan login terlebih dahulu.",
+      });
       navigate("/login");
       return;
     }
 
     const res = await AddToKeranjangService(authUser.id, produkId, 1);
     if (res.status) {
-      alert("Berhasil ditambahkan ke keranjang");
+      showToast({
+        type: "success",
+        heading: "Berhasil",
+        description: "Berhasil ditambahkan ke keranjang.",
+      });
     } else {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal",
+        description: res.message || "Gagal menambahkan ke keranjang.",
+      });
     }
   };
 
   const handleBuyNow = (produkId) => {
     if (!authUser) {
-      alert("Silakan login terlebih dahulu");
+      showToast({
+        type: "warning",
+        heading: "Perlu login",
+        description: "Silakan login terlebih dahulu.",
+      });
       navigate("/login");
       return;
     }

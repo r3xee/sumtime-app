@@ -129,7 +129,6 @@ export const useAuthStore = create((set, get) => ({
     try {
       if (typeof window !== "undefined") {
         const hash = window.location.hash;
-        console.log("[checkAuth] current hash:", hash);
         if (hash && hash.includes("access_token")) {
           const params = new URLSearchParams(hash.substring(1));
           const access_token = params.get("access_token");

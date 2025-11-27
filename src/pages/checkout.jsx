@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { CreateOrderService } from "../service/checkout.service";
 import { GetKeranjangByUserService } from "../service/keranjang.service";
 import { useAuthStore } from "../store/useAuthStore";
+import { showToast } from "../store/useToastStore";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -112,12 +113,20 @@ const CheckoutPage = () => {
     e.preventDefault();
 
     if (!address) {
-      alert("Pilih lokasi pengiriman di map");
+      showToast({
+        type: "warning",
+        heading: "Lokasi belum dipilih",
+        description: "Pilih lokasi pengiriman di map terlebih dahulu.",
+      });
       return;
     }
 
     if (items.length === 0) {
-      alert("Keranjang kosong");
+      showToast({
+        type: "warning",
+        heading: "Keranjang kosong",
+        description: "Tidak ada item yang bisa di-checkout.",
+      });
       return;
     }
 
@@ -135,11 +144,19 @@ const CheckoutPage = () => {
     setSubmitting(false);
 
     if (!res.status) {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal membuat pesanan",
+        description: res.message || "Terjadi kesalahan saat membuat pesanan.",
+      });
       return;
     }
 
-    alert("Pesanan berhasil dibuat!");
+    showToast({
+      type: "success",
+      heading: "Pesanan dibuat",
+      description: "Pesanan berhasil dibuat!",
+    });
     navigate("/member/riwayat-pemesanan");
   };
 

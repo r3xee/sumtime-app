@@ -8,7 +8,7 @@ function Navbar() {
   const [cartCount, setCartCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { authUser, profile } = useAuthStore();
-  console.log("[Navbar] authUser, profile", authUser, profile);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -80,7 +80,7 @@ function Navbar() {
     <>
       <div className="fixed top-0 flex items-center justify-between md:justify-center md:gap-80 px-6 md:px-0 py-5 w-full z-50 h-16 transition-all duration-300 bg-white shadow-lg">
         <div className="flex items-center">
-          <img src="../public/Logoo.png" alt="Logo" className="h-20 w-auto" />
+          <img src="../public/navicon.png" alt="Logo" className="h-20 w-auto" />
         </div>
 
         <ul className="hidden md:flex gap-6">

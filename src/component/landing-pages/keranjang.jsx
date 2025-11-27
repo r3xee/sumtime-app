@@ -6,6 +6,7 @@ import {
   DeleteFromKeranjangService,
 } from "../../service/keranjang.service";
 import { useAuthStore } from "../../store/useAuthStore";
+import { showToast } from "../../store/useToastStore";
 import { useNavigate } from "react-router";
 
 const KeranjangComponent = () => {
@@ -80,7 +81,11 @@ const KeranjangComponent = () => {
 
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
-      alert("Pilih minimal 1 produk");
+      showToast({
+        type: "warning",
+        heading: "Keranjang",
+        description: "Pilih minimal 1 produk.",
+      });
       return;
     }
 

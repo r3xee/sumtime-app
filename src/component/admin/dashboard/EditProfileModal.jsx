@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
 import { UpdateProfileService } from "../../../service/profile.service";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { showToast } from "../../../store/useToastStore";
 
 const EditProfileModal = ({ isOpen, onClose, profile }) => {
   const [loading, setLoading] = useState(false);
@@ -37,7 +38,11 @@ const EditProfileModal = ({ isOpen, onClose, profile }) => {
     const res = await UpdateProfileService(profile.id, formData);
 
     if (res.status) {
-      alert("Profile berhasil diupdate");
+      showToast({
+        type: "success",
+        heading: "Profil diupdate",
+        description: "Profile berhasil diupdate.",
+      });
       
       // Update auth user di store
       setAuthUser({
@@ -47,7 +52,11 @@ const EditProfileModal = ({ isOpen, onClose, profile }) => {
       
       onClose(true); // true = refresh data
     } else {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal mengupdate profil",
+        description: res.message || "Terjadi kesalahan saat mengupdate profil.",
+      });
     }
 
     setLoading(false);

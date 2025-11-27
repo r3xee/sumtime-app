@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
+import { showToast } from "../../../store/useToastStore";
 import {
   CreateAdminUserService,
   UpdateAdminUserService,
@@ -39,22 +40,38 @@ const UserForm = ({ data, onClose }) => {
     e.preventDefault();
 
     if (!formData.username) {
-      alert("Username harus diisi");
+      showToast({
+        type: "warning",
+        heading: "Validasi",
+        description: "Username harus diisi.",
+      });
       return;
     }
 
     if (!formData.email) {
-      alert("Email harus diisi");
+      showToast({
+        type: "warning",
+        heading: "Validasi",
+        description: "Email harus diisi.",
+      });
       return;
     }
 
     if (!data && !formData.password) {
-      alert("Password harus diisi untuk admin baru");
+      showToast({
+        type: "warning",
+        heading: "Validasi",
+        description: "Password harus diisi untuk admin baru.",
+      });
       return;
     }
 
     if (!data && formData.password.length < 6) {
-      alert("Password minimal 6 karakter");
+      showToast({
+        type: "warning",
+        heading: "Validasi",
+        description: "Password minimal 6 karakter.",
+      });
       return;
     }
 
@@ -81,11 +98,21 @@ const UserForm = ({ data, onClose }) => {
     setLoading(false);
 
     if (!res.status) {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal menyimpan admin",
+        description: res.message || "Terjadi kesalahan saat menyimpan data.",
+      });
       return;
     }
 
-    alert(data ? "Admin berhasil diupdate" : "Admin berhasil ditambahkan");
+    showToast({
+      type: "success",
+      heading: data ? "Admin diupdate" : "Admin ditambahkan",
+      description: data
+        ? "Data admin berhasil diupdate."
+        : "Admin baru berhasil ditambahkan.",
+    });
     onClose(true);
   };
 

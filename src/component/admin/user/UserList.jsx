@@ -13,6 +13,7 @@ import {
   GetAllAdminUsersService,
   DeleteAdminUserService,
 } from "../../../service/user.service";
+import { showToast } from "../../../store/useToastStore";
 import UserForm from "./UserForm";
 
 const UserList = () => {
@@ -56,10 +57,18 @@ const UserList = () => {
 
     const res = await DeleteAdminUserService(id);
     if (res.status) {
-      alert("Admin berhasil dihapus");
+      showToast({
+        type: "success",
+        heading: "Admin dihapus",
+        description: "Admin berhasil dihapus.",
+      });
       fetchUsers();
     } else {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal menghapus admin",
+        description: res.message || "Terjadi kesalahan saat menghapus admin.",
+      });
     }
   };
 

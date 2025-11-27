@@ -12,6 +12,7 @@ import {
   GetAllProdukService,
   DeleteProdukService,
 } from "../../../service/produk.service";
+import { showToast } from "../../../store/useToastStore";
 import ProdukForm from "./ProdukForm";
 
 const ProdukList = () => {
@@ -55,10 +56,18 @@ const ProdukList = () => {
 
     const res = await DeleteProdukService(id);
     if (res.status) {
-      alert("Produk berhasil dihapus");
+      showToast({
+        type: "success",
+        heading: "Produk dihapus",
+        description: "Produk berhasil dihapus.",
+      });
       fetchProduk();
     } else {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal menghapus produk",
+        description: res.message || "Terjadi kesalahan saat menghapus produk.",
+      });
     }
   };
 

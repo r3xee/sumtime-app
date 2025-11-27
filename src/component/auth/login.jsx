@@ -2,6 +2,7 @@ import { Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuthStore } from "../../store/useAuthStore";
+import { showToast } from "../../store/useToastStore";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -47,7 +48,11 @@ const Login = () => {
       return;
     }
 
-    alert("Login berhasil");
+    showToast({
+      type: "success",
+      heading: "Berhasil masuk",
+      description: "Login berhasil.",
+    });
 
     // Redirect based on role or to complete profile
     navigate("/");

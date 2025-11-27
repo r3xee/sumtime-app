@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Loader2, Eye, EyeOff, Upload, X } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
+import { UpdateAvatarService } from "../../service/profile.service";
 import { supabase } from "../../lib/supabase/client";
 
 const EditProfilePage = () => {
@@ -120,9 +121,29 @@ const EditProfilePage = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleRemoveAvatar = () => {
+  const handleRemoveAvatar = async () => {
     setAvatarFile(null);
     setAvatarPreview(null);
+
+    if (!profile?.id) return;
+
+    try {
+      setUploadingAvatar(true);
+      const res = await UpdateAvatarService({
+        id: profile.id,
+        avatar_url: null,
+      });
+      setUploadingAvatar(false);
+
+      if (!res.status) {
+        setError(res.message);
+        setAvatarPreview(profile.avatar_url || null);
+      }
+    } catch (error) {
+      setUploadingAvatar(false);
+      setError("Gagal menghapus avatar: " + error.message);
+      setAvatarPreview(profile.avatar_url || null);
+    }
   };
 
   const uploadAvatar = async (file) => {

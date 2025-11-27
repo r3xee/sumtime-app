@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Loader2, Upload, Image as ImageIcon } from "lucide-react";
+import { showToast } from "../../../store/useToastStore";
 import {
   CreateProdukService,
   UpdateProdukService,
@@ -53,12 +54,20 @@ const ProdukForm = ({ data, onClose }) => {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("File harus berupa gambar");
+      showToast({
+        type: "warning",
+        heading: "File tidak valid",
+        description: "File harus berupa gambar.",
+      });
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert("Ukuran file maksimal 2MB");
+      showToast({
+        type: "warning",
+        heading: "File terlalu besar",
+        description: "Ukuran file maksimal 2MB.",
+      });
       return;
     }
 
@@ -69,7 +78,11 @@ const ProdukForm = ({ data, onClose }) => {
     setUploadingImage(false);
 
     if (!res.status) {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal upload gambar",
+        description: res.message || "Terjadi kesalahan saat upload gambar.",
+      });
       return;
     }
 
@@ -84,17 +97,29 @@ const ProdukForm = ({ data, onClose }) => {
     e.preventDefault();
 
     if (!formData.nama) {
-      alert("Nama produk harus diisi");
+      showToast({
+        type: "warning",
+        heading: "Validasi",
+        description: "Nama produk harus diisi.",
+      });
       return;
     }
 
     if (!formData.harga || formData.harga <= 0) {
-      alert("Harga harus diisi dan lebih dari 0");
+      showToast({
+        type: "warning",
+        heading: "Validasi",
+        description: "Harga harus diisi dan lebih dari 0.",
+      });
       return;
     }
 
     if (!formData.stok || formData.stok < 0) {
-      alert("Stok harus diisi dan tidak boleh negatif");
+      showToast({
+        type: "warning",
+        heading: "Validasi",
+        description: "Stok harus diisi dan tidak boleh negatif.",
+      });
       return;
     }
 
@@ -117,11 +142,21 @@ const ProdukForm = ({ data, onClose }) => {
     setLoading(false);
 
     if (!res.status) {
-      alert(res.message);
+      showToast({
+        type: "error",
+        heading: "Gagal menyimpan produk",
+        description: res.message || "Terjadi kesalahan saat menyimpan produk.",
+      });
       return;
     }
 
-    alert(data ? "Produk berhasil diupdate" : "Produk berhasil ditambahkan");
+    showToast({
+      type: "success",
+      heading: data ? "Produk diupdate" : "Produk ditambahkan",
+      description: data
+        ? "Produk berhasil diupdate."
+        : "Produk baru berhasil ditambahkan.",
+    });
     onClose(true);
   };
 

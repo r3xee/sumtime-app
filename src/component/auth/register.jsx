@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Loader2, X } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useAuthStore } from "../../store/useAuthStore";
+import { showToast } from "../../store/useToastStore";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -51,7 +52,11 @@ const Register = () => {
       return;
     }
 
-    alert("Berhasil Register! Silakan lengkapi profil Anda.");
+    showToast({
+      type: "success",
+      heading: "Registrasi berhasil",
+      description: "Berhasil register! Silakan lengkapi profil Anda.",
+    });
     navigate("/complete-profile");
   };
 

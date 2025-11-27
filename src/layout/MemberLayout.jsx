@@ -1,12 +1,39 @@
 import { Outlet, useNavigate, useLocation } from "react-router";
-import { User } from "lucide-react";
+import { User, FileText, LogOut } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import Navbar from "../component/ui/navbar";
+import { showToast } from "../store/useToastStore";
 
 const MemberLayout = () => {
   const { logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const menuItems = [
+    {
+      icon: User,
+      label: "Informasi Akun",
+      path: "/member",
+      isActive: location.pathname === "/member"
+    },
+    {
+      icon: FileText,
+      label: "Riwayat Pemesanan",
+      path: "/member/riwayat-pemesanan",
+      isActive: location.pathname === "/member/riwayat-pemesanan" ||
+               location.pathname.startsWith("/member/riwayat-transaksi")
+    }
+  ];
+
+  const handleLogout = async () => {
+    await logout();
+
+    showToast({
+      type: "success",
+      heading: "Berhasil Keluar",
+      description: "Berhasil keluar dari akun anda",
+    })
+  }
 
   return (
     <div className="min-h-screen bg-[url('../background.png')] bg-repeat-y bg-center relative">
@@ -16,62 +43,77 @@ const MemberLayout = () => {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm p-4 space-y-2">
-                <button
-                  onClick={() => navigate("/member")}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition ${
-                    location.pathname === "/member"
-                      ? "bg-blue-100 text-blue-600"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <User size={20} />
-                  <span>Informasi Akun</span>
-                </button>
-                <button
-                  onClick={() => navigate("/member/riwayat-pemesanan")}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition ${
-                    location.pathname === "/member/riwayat-pemesanan" ||
-                    location.pathname.startsWith("/member/riwayat-transaksi")
-                      ? "bg-blue-100 text-blue-600"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+              <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 p-6 space-y-3">
+                {/* Header */}
+                <div className="mb-4">
+                  <h2 className="text-lg font-bold text-gray-800 mb-1">Menu Akun</h2>
+                  <p className="text-sm text-gray-500">Kelola profil dan pesanan Anda</p>
+                </div>
+
+                {/* Navigation Items */}
+                {menuItems.map((item) => (
+                  <button
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    className={`
+                      group w-full flex items-center gap-4 px-5 py-4 rounded-xl font-medium
+                      transition-all duration-300 ease-out
+                      ${item.isActive
+                        ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30 scale-[1.02]"
+                        : "bg-white text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-md hover:scale-[1.01] border border-gray-100"
+                      }
+                    `}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                  <span>Riwayat Pemesanan</span>
-                </button>
+                    <div className={`
+                      p-2 rounded-lg transition-colors duration-300
+                      ${item.isActive
+                        ? "bg-white/20"
+                        : "bg-gray-100 group-hover:bg-blue-100"
+                      }
+                    `}>
+                      <item.icon 
+                        size={20} 
+                        className={item.isActive ? "text-white" : "text-gray-600 group-hover:text-blue-600"}
+                      />
+                    </div>
+                    <span className="flex-1 text-left">{item.label}</span>
+                    {item.isActive && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+                    )}
+                  </button>
+                ))}
+
+                {/* Divider */}
+                <div className="relative py-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200"></div>
+                  </div>
+                </div>
+
+                {/* Logout Button */}
                 <button
-                  onClick={logout}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                  onClick={handleLogout}
+                  className="
+                    group w-full flex items-center gap-4 px-5 py-4 rounded-xl
+                    bg-white text-gray-700 font-medium border border-gray-100
+                    hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50
+                    hover:border-red-200 hover:shadow-md hover:scale-[1.01]
+                    transition-all duration-300 ease-out
+                  "
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  <div className="p-2 rounded-lg bg-gray-100 group-hover:bg-red-100 transition-colors duration-300">
+                    <LogOut 
+                      size={20} 
+                      className="text-gray-600 group-hover:text-red-600 transition-colors duration-300"
                     />
-                  </svg>
-                  <span>Keluar Dari Akun</span>
+                  </div>
+                  <span className="flex-1 text-left group-hover:text-red-600 transition-colors duration-300">
+                    Keluar Dari Akun
+                  </span>
                 </button>
               </div>
+
+           
             </div>
             <Outlet />
           </div>
