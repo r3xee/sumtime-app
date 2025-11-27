@@ -45,6 +45,8 @@ const CompleteProfile = () => {
 
     setIsLoading(true);
 
+    console.log("authUSer", authUser);
+
     const res = await UpdateProfileService({
       id: authUser.id,
       username: formData.username,
@@ -55,6 +57,7 @@ const CompleteProfile = () => {
     if (!res.status) {
       setErrors(res.message);
       setIsLoading(false);
+      console.error(res.message);
       return;
     }
 

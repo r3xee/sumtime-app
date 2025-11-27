@@ -49,7 +49,6 @@ const Login = () => {
 
     alert("Login berhasil");
 
-    // Redirect based on role or to complete profile
     navigate("/");
   };
 

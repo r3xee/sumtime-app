@@ -52,7 +52,7 @@ const Register = () => {
     }
 
     alert("Berhasil Register! Silakan lengkapi profil Anda.");
-    navigate("/complete-profile");
+    // navigate("/complete-profile");
   };
 
   const handleGoogleLogin = async () => {

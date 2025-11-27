@@ -85,6 +85,7 @@ export const useAuthStore = create((set, get) => ({
   googleLogin: async () => {
     try {
       const res = await GoogleLoginService();
+
       return res;
     } catch (error) {
       console.error("Google login error:", error);

@@ -72,13 +72,16 @@ export const GetProfileByIdService = async (id) => {
 };
 
 // Update profile (complete profile)
-export const UpdateProfileService = async (id, updateData) => {
+export const UpdateProfileService = async (updateData) => {
+  console.log("id", updateData.id);
   const { data, error } = await supabase
     .from("profiles")
     .update(updateData)
-    .eq("id", id)
+    .eq("id", updateData.id)
     .select()
-    .single();
+    .maybeSingle();
+
+  console.log("data", data);
 
   if (error) {
     return {
