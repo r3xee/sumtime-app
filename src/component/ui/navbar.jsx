@@ -8,6 +8,7 @@ function Navbar() {
   const [cartCount, setCartCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { authUser, profile } = useAuthStore();
+  console.log("[Navbar] authUser, profile", authUser, profile);
   const navigate = useNavigate();
   const location = useLocation();
 

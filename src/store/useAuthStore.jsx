@@ -127,6 +127,28 @@ export const useAuthStore = create((set, get) => ({
   checkAuth: async () => {
     set({ isCheckingAuth: true });
     try {
+      if (typeof window !== "undefined") {
+        const hash = window.location.hash;
+        if (hash && hash.includes("access_token")) {
+          const params = new URLSearchParams(hash.substring(1));
+          const access_token = params.get("access_token");
+          const refresh_token = params.get("refresh_token");
+
+          if (access_token && refresh_token) {
+            const { error: setSessionError } = await supabase.auth.setSession({
+              access_token,
+              refresh_token,
+            });
+
+            if (setSessionError) {
+              console.error("Set session error:", setSessionError);
+            }
+
+            window.location.hash = "";
+          }
+        }
+      }
+
       const {
         data: { session },
       } = await supabase.auth.getSession();

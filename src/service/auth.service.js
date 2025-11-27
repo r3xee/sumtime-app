@@ -69,22 +69,9 @@ export const LogoutService = async () => {
 };
 
 export const GoogleLoginService = async () => {
-  const { error } = await supabase.auth.signInWithOAuth({
+  await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: {
-      redirectTo: window.location.origin,
-    },
   });
-
-  if (error) {
-    return {
-      status: false,
-      message: error.message,
-    };
-  }
-  return {
-    status: true,
-  };
 };
 
 export const UpdatePasswordService = async ({ id, newPassword }) => {

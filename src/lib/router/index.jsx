@@ -19,6 +19,7 @@ import EditAkunPages from "../../pages/member/edit-akun";
 import ProdukPages from "../../pages/produk";
 import DetailProdukPages from "../../pages/detail-produk";
 import KeranjangPage from "../../pages/keranjang";
+// import AuthCallback from "../../pages/AuthCallback";
 import CheckoutPage from "../../pages/checkout";
 import { AdminRoute, MemberRoute } from "../../component/ProtectedRoute";
 
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
     path: "/checkout",
     element: <CheckoutPage />,
   },
+  // {
+  //   path: "/auth/callback",
+  //   element: <AuthCallback />,
+  // },
   {
     path: "/admin",
     element: (

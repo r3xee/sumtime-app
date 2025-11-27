@@ -1,10 +1,9 @@
 import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router";
+import { Navigate } from "react-router";
 import { useAuthStore } from "../store/useAuthStore";
 
 export const ProtectedRoute = ({ children, requiredRole }) => {
   const { authUser, profile, isCheckingAuth, checkAuth } = useAuthStore();
-  const navigate = useNavigate();
 
   useEffect(() => {
     checkAuth();
