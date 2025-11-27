@@ -5,7 +5,8 @@ import Password from "./ui/password";
 import { Camera, Loader2 } from "lucide-react";
 
 const EditAkun = () => {
-  const { profile, uploadAvatar } = useAuthStore();
+  const { profile, uploadAvatar, authUser } = useAuthStore();
+  const isGoogleUser = authUser?.app_metadata?.provider === "google";
   const [isProfile, setIsProfile] = useState(true);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const fileInputRef = useRef(null);
@@ -71,9 +72,13 @@ const EditAkun = () => {
               {/* Button Edit Avatar */}
               <button
                 onClick={handleAvatarClick}
-                disabled={isUploadingAvatar}
-                className="absolute -bottom-1 -right-1 bg-[#60B5FF] text-white p-2 rounded-full hover:bg-[#4A9FE5] transition-all shadow-lg disabled:opacity-50"
-                title="Edit Avatar"
+                disabled={isUploadingAvatar || isGoogleUser}
+                className="absolute -bottom-1 -right-1 bg-[#60B5FF] text-white p-2 rounded-full hover:bg-[#4A9FE5] transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                title={
+                  isGoogleUser
+                    ? "Avatar diatur dari akun Google"
+                    : "Edit Avatar"
+                }
               >
                 {isUploadingAvatar ? (
                   <Loader2 size={14} className="animate-spin" />
@@ -89,6 +94,7 @@ const EditAkun = () => {
                 accept="image/*"
                 onChange={handleAvatarChange}
                 className="hidden"
+                disabled={isGoogleUser}
               />
             </div>
           </div>
@@ -110,10 +116,13 @@ const EditAkun = () => {
               Edit Profile
             </button>
             <button
-              onClick={() => setIsProfile(false)}
+              onClick={() => !isGoogleUser && setIsProfile(false)}
+              disabled={isGoogleUser}
               className={`${
                 isProfile ? "bg-[#898989]" : "bg-[#60B5FF]"
-              } px-10 text-md py-3 rounded-full text-white`}
+              } px-10 text-md py-3 rounded-full text-white ${
+                isGoogleUser ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               Password
             </button>

@@ -3,7 +3,8 @@ import { useAuthStore } from "../../../store/useAuthStore";
 import { Loader2, X } from "lucide-react";
 
 const Profile = () => {
-  const { profile, updateProfile } = useAuthStore();
+  const { profile, updateProfile, authUser } = useAuthStore();
+  const isGoogleUser = authUser?.app_metadata?.provider === "google";
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -45,10 +46,10 @@ const Profile = () => {
       return;
     }
 
-    if (!formData.no_hp) {
-      setError("Nomor HP harus diisi");
-      return;
-    }
+    // if (!formData.no_hp) {
+    //   setError("Nomor HP harus diisi");
+    //   return;
+    // }
 
     if (!formData.email) {
       setError("Email harus diisi");
@@ -57,12 +58,17 @@ const Profile = () => {
 
     setIsLoading(true);
 
-    const res = await updateProfile({
-      username: formData.username,
+    const payload = {
       no_hp: formData.no_hp,
       email: formData.email,
       bio: formData.bio,
-    });
+    };
+
+    if (!isGoogleUser) {
+      payload.username = formData.username;
+    }
+
+    const res = await updateProfile(payload);
 
     setIsLoading(false);
 
@@ -110,7 +116,6 @@ const Profile = () => {
             value={formData.no_hp}
             onChange={handleChange}
             placeholder="Masukkan No Hp"
-            required
             className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-700 focus:border-blue-700 placeholder:text-sm placeholder:text-gray-500"
           />
         </div>
@@ -129,8 +134,14 @@ const Profile = () => {
             onChange={handleChange}
             placeholder="Masukkan Email"
             required
-            className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-700 focus:border-blue-700 placeholder:text-sm placeholder:text-gray-500"
+            disabled={isGoogleUser}
+            className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-700 focus:border-blue-700 placeholder:text-sm placeholder:text-gray-500 disabled:bg-gray-100 disabled:text-gray-500"
           />
+          {isGoogleUser && (
+            <p className="text-xs text-gray-500 mt-1">
+              Email diatur dari akun Google dan tidak dapat diubah di sini.
+            </p>
+          )}
         </div>
         <div>
           <label
@@ -147,8 +158,14 @@ const Profile = () => {
             onChange={handleChange}
             placeholder="Masukkan Username"
             required
-            className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-700 focus:border-blue-700 placeholder:text-sm placeholder:text-gray-500"
+            disabled={isGoogleUser}
+            className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-700 focus:border-blue-700 placeholder:text-sm placeholder:text-gray-500 disabled:bg-gray-100 disabled:text-gray-500"
           />
+          {isGoogleUser && (
+            <p className="text-xs text-gray-500 mt-1">
+              Username diatur dari akun Google dan tidak dapat diubah di sini.
+            </p>
+          )}
         </div>
         <div>
           <label

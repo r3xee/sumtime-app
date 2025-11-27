@@ -6,7 +6,8 @@ import { supabase } from "../../lib/supabase/client";
 
 const EditProfilePage = () => {
   const navigate = useNavigate();
-  const { profile, updateProfile } = useAuthStore();
+  const { profile, updateProfile, authUser } = useAuthStore();
+  const isGoogleUser = authUser?.app_metadata?.provider === "google";
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -301,7 +302,7 @@ const EditProfilePage = () => {
                       accept="image/*"
                       onChange={handleAvatarChange}
                       className="hidden"
-                      disabled={uploadingAvatar}
+                      disabled={uploadingAvatar || isGoogleUser}
                     />
                   </label>
                   <p className="text-xs text-gray-500 mt-2">
@@ -343,10 +344,13 @@ const EditProfilePage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isGoogleUser}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Email akan diperbarui di akun Anda
+                  {isGoogleUser
+                    ? "Email diatur dari akun Google dan tidak dapat diubah di sini."
+                    : "Email akan diperbarui di akun Anda"}
                 </p>
               </div>
 
@@ -386,7 +390,9 @@ const EditProfilePage = () => {
               </h2>
 
               <p className="text-sm text-gray-600">
-                Biarkan kosong jika tidak ingin mengubah password
+                {isGoogleUser
+                  ? "Akun ini login dengan Google. Password tidak dapat diubah di aplikasi ini."
+                  : "Biarkan kosong jika tidak ingin mengubah password"}
               </p>
 
               {/* Current Password */}
@@ -401,7 +407,8 @@ const EditProfilePage = () => {
                     value={formData.currentPassword}
                     onChange={handleChange}
                     placeholder="Masukkan password saat ini"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={authUser.app_metadata.provider === 'google'}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
                   />
                   <button
                     type="button"
@@ -425,7 +432,8 @@ const EditProfilePage = () => {
                     value={formData.newPassword}
                     onChange={handleChange}
                     placeholder="Masukkan password baru"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={isGoogleUser}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
                   />
                   <button
                     type="button"
@@ -448,7 +456,8 @@ const EditProfilePage = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Konfirmasi password baru"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isGoogleUser}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
                 />
               </div>
             </div>

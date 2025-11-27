@@ -38,10 +38,10 @@ const CompleteProfile = () => {
       return;
     }
 
-    if (!formData.no_hp) {
-      setErrors("Harap isi nomor HP");
-      return;
-    }
+    // if (!formData.no_hp) {
+    //   setErrors("Harap isi nomor HP");
+    //   return;
+    // }
 
     setIsLoading(true);
 
@@ -148,7 +148,6 @@ const CompleteProfile = () => {
                 value={formData.no_hp}
                 onChange={handleChange}
                 placeholder="Contoh: 081234567890"
-                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-700 focus:border-blue-700 placeholder:text-sm placeholder:text-gray-500"
               />
             </div>

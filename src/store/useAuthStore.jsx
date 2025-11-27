@@ -129,19 +129,28 @@ export const useAuthStore = create((set, get) => ({
     try {
       if (typeof window !== "undefined") {
         const hash = window.location.hash;
+        console.log("[checkAuth] current hash:", hash);
         if (hash && hash.includes("access_token")) {
           const params = new URLSearchParams(hash.substring(1));
           const access_token = params.get("access_token");
           const refresh_token = params.get("refresh_token");
 
+          console.log("[checkAuth] parsed tokens", {
+            hasAccessToken: !!access_token,
+            hasRefreshToken: !!refresh_token,
+          });
+
           if (access_token && refresh_token) {
-            const { error: setSessionError } = await supabase.auth.setSession({
-              access_token,
-              refresh_token,
-            });
+            const { data: setSessionData, error: setSessionError } =
+              await supabase.auth.setSession({
+                access_token,
+                refresh_token,
+              });
 
             if (setSessionError) {
               console.error("Set session error:", setSessionError);
+            } else {
+              console.log("[checkAuth] setSession success", setSessionData);
             }
 
             window.location.hash = "";
@@ -153,17 +162,50 @@ export const useAuthStore = create((set, get) => ({
         data: { session },
       } = await supabase.auth.getSession();
 
+      console.log("[checkAuth] session from getSession", session);
+
       if (session?.user) {
+        const isGoogleUser =
+          session.user.app_metadata?.provider === "google";
+
+        const fullName =
+          session.user.user_metadata?.full_name ||
+          session.user.user_metadata?.name ||
+          "User";
+        const avatarUrl =
+          session.user.user_metadata?.avatar_url ||
+          session.user.user_metadata?.picture ||
+          null;
+
         // Get profile data
         let profileRes = await GetProfileByEmailService(session.user.email);
 
-        // Jika profile tidak ada (OAuth user baru), buat profile
+        // Jika profile tidak ada (misal user baru), buat profile dengan data dasar
         if (!profileRes.status) {
           const createRes = await CreateProfileService({
             id: session.user.id,
             email: session.user.email,
+            username: isGoogleUser ? fullName : undefined,
+            avatar_url: isGoogleUser ? avatarUrl : undefined,
           });
           profileRes = createRes;
+        } else if (profileRes.status && isGoogleUser) {
+          // Untuk user Google lama: lengkapi username/avatar dari user_metadata jika belum ada
+          const currentProfile = profileRes.data;
+          const needsUsername = !currentProfile.username && fullName;
+          const needsAvatar = !currentProfile.avatar_url && avatarUrl;
+
+          if (needsUsername || needsAvatar) {
+            const updateRes = await UpdateProfileWithEmailService({
+              id: currentProfile.id,
+              username: needsUsername ? fullName : undefined,
+              avatar_url: needsAvatar ? avatarUrl : undefined,
+            });
+
+            if (updateRes.status) {
+              profileRes = updateRes;
+            }
+          }
         }
 
         set({

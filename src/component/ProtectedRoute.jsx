@@ -26,8 +26,8 @@ export const ProtectedRoute = ({ children, requiredRole }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Check if profile is complete
-  if (profile && (!profile.username || !profile.no_hp)) {
+  // Check if profile is complete (hanya username yang wajib, no_hp opsional)
+  if (profile && !profile.username) {
     return <Navigate to="/complete-profile" replace />;
   }
 

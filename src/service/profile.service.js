@@ -2,11 +2,15 @@ import { supabase } from "../lib/supabase/client";
 import { adminAuthClient } from "../lib/supabase/admin";
 import { environment } from "../config/environment";
 
-// Create profile saat register
-export const CreateProfileService = async ({ id, email }) => {
+// Create profile saat register / pertama kali login (misal via Google)
+export const CreateProfileService = async ({ id, email, username, avatar_url }) => {
+  const insertData = { id, email };
+  if (username) insertData.username = username;
+  if (avatar_url) insertData.avatar_url = avatar_url;
+
   const { data, error } = await supabase
     .from("profiles")
-    .insert([{ id, email }])
+    .insert([insertData])
     .select()
     .single();
 
@@ -106,6 +110,7 @@ export const UpdateProfileWithEmailService = async ({
   no_hp,
   bio,
   email,
+  avatar_url,
 }) => {
   try {
     // Update email di auth.users jika email berubah
@@ -131,6 +136,7 @@ export const UpdateProfileWithEmailService = async ({
     if (no_hp) updateData.no_hp = no_hp;
     if (bio) updateData.bio = bio;
     if (email) updateData.email = email;
+    if (avatar_url) updateData.avatar_url = avatar_url;
 
     const { data, error } = await supabase
       .from("profiles")
@@ -250,8 +256,8 @@ export const CheckProfileCompleteService = async (id) => {
     };
   }
 
-  // Profile dianggap complete jika username dan no_hp sudah diisi
-  const isComplete = data.username && data.no_hp;
+  // Profile dianggap complete jika username sudah diisi (no_hp opsional)
+  const isComplete = !!data.username;
 
   return {
     status: true,
